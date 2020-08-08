@@ -1,5 +1,7 @@
 # 用于Windoge OS的Linux子系统
 
+[English](README.md) | [简体中文](README-zh.md)
+
 ## 简介
 
 这是Windoge OS的子系统。

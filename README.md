@@ -1,5 +1,7 @@
 # Linux Subsystem for Windoge OS
 
+[简体中文](README-zh.md) | [English](README.md)
+
 ## Introductions
 
 This is a subsystem for Windoge OS.
