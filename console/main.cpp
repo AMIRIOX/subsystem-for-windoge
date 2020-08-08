@@ -1,49 +1,43 @@
 #include <cstdio>
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 #ifdef _WIN32
-   #include <windows.h>
-   #include <direct.h>
-   #include <shlwapi.h>
+#include <direct.h>
+#include <shlwapi.h>
+#include <windows.h>
 #elif __APPLE__
-    #if TARGET_OS_MAC
-        #include <mach-o/dyld.h>
-    #endif
-#elif __linux__
-    #include <unistd.h>
-    #include <linux/limits.h>
+#if TARGET_OS_MAC
+#include <mach-o/dyld.h>
 #endif
-enum os{
-    WINDOWS,
-    MACOS,
-    LINUX,
-    UNIX,
-    IOS
-}platform;
+#elif __linux__
+#include <linux/limits.h>
+#include <unistd.h>
+#endif
+enum os { WINDOWS, MACOS, LINUX, UNIX, IOS } platform;
 std::vector<std::string> ent_graph;
 // TODO: support UNIX.
 void initEnv() {
 #ifdef _WIN32
-   platform = os::WINDOWS;
+    platform = os::WINDOWS;
 #elif __APPLE__
-    #if TARGET_IPHONE_SIMULATOR
-        platform = os::IOS;
-    #elif TARGET_OS_IPHONE
-        platform = os::IOS;
-    #elif TARGET_OS_MAC
-        platform = os::MACOS;
-    #else
-    #   error "Unknown Apple platform, not supported."
-    #endif
+#if TARGET_IPHONE_SIMULATOR
+    platform = os::IOS;
+#elif TARGET_OS_IPHONE
+    platform = os::IOS;
+#elif TARGET_OS_MAC
+    platform = os::MACOS;
+#else
+#error "Unknown Apple platform, not supported."
+#endif
 #elif __linux__
     platform = os::LINUX;
 #endif
 }
 std::string getCurPath() {
-    if(platform == os::WINDOWS) {
-        #ifdef WIN32
+    if (platform == os::WINDOWS) {
+#ifdef WIN32
         // get current executable file dir
         wchar_t szExePath[MAX_PATH] = {0};
         GetModuleFileNameW(NULL, szExePath, sizeof(szExePath));
@@ -52,29 +46,29 @@ std::string getCurPath() {
         size_t len = wcslen(szExePath) + 1;
         size_t converted = 0;
         char *CStr;
-        CStr=(char*)malloc(len*sizeof(char));
-        wcstombs(CStr,szExePath, len);
-       return std::string(CStr);
-       #endif
-    }else if(platform == os::MACOS) {
-        #ifdef __APPLE__
+        CStr = (char *)malloc(len * sizeof(char));
+        wcstombs(CStr, szExePath, len);
+        return std::string(CStr);
+#endif
+    } else if (platform == os::MACOS) {
+#ifdef __APPLE__
         char _path[512];
         unsigned size = 512;
-            #if TARGET_OS_MAC
-            _NSGetExecutablePath(_path, &size);
-            #endif // TARGET_OS_MAC
+#if TARGET_OS_MAC
+        _NSGetExecutablePath(_path, &size);
+#endif  // TARGET_OS_MAC
         _path[size] = '\0';
         return std::string(_path);
-        #endif
-    } else if(platform == os::LINUX) {
-        #if __linux__
+#endif
+    } else if (platform == os::LINUX) {
+#if __linux__
         char _path[512];
         int size = readlink("/proc/self/exe", _path, 512);
         _path[size] = '\0';
         std::string resPath(_path);
-        for(int i=0;i<9;i++) resPath.pop_back();
+        for (int i = 0; i < 9; i++) resPath.pop_back();
         return resPath;
-        #endif
+#endif
     }
     return "";
 }
@@ -98,14 +92,14 @@ std::string currentUser = "amiriox";
 using namespace std;
 int main(int argc, char const *argv[]) {
     initEnv();
-    currentDir=getCurPath();
+    currentDir = getCurPath();
     while (1) {
         OUTPUT_ORIGIN_WITH_USER;
         string command;
         cin >> command;
-        if(command=="exit") return 0;
-        string exe = getCurPath()+"/../rootfs/bin/"+command;
-        if(platform==os::WINDOWS) exe+=".exe";
+        if (command == "exit") return 0;
+        string exe = getCurPath() + "/../rootfs/bin/" + command;
+        if (platform == os::WINDOWS) exe += ".exe";
         system(exe.c_str());
     }
     return 0;
