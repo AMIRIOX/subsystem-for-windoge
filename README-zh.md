@@ -88,6 +88,6 @@ $ vim ~/.zshrc
 _alias imt =" sudo mount -t drvfs F:/mnt/windoge"_
 下次使用它时，可以直接使用 `imt` 。
 
-###适用于macOS
+### 适用于macOS
 
 **目前不支持**
