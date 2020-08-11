@@ -94,13 +94,15 @@ int main(int argc, char const *argv[]) {
     initEnv();
     currentDir = getCurPath();
     while (1) {
+        //TODO: 修改路径机制 默认~, 跟从Linux的cd命令跳转目录
         OUTPUT_ORIGIN_WITH_USER;
         string command;
-        cin >> command;
+        getline(cin,command);
         if (command == "exit") return 0;
         string exe = getCurPath() + "/../rootfs/bin/" + command;
         if (platform == os::WINDOWS) exe += ".exe";
-        system(exe.c_str());
+        int returnValue = system(exe.c_str());
+        if(returnValue!=0) system(command.c_str());
     }
     return 0;
 }
